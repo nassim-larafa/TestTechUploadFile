@@ -1,18 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 
-const CHUNK_SIZE = 10 * 1024 * 1024; // 10 MB (pour notre 3 GB fichier)
-
-/* cette fonction on peut l'utiliser si on veut optimiser le chnuk-size selon le taille du notre fichier
-const getChunkSize = (fileSize) => {
-  if (fileSize < 100 * 1024 * 1024) { // Less than 100 MB
-    return 1 * 1024 * 1024; // 1 MB
-  } else if (fileSize < 1024 * 1024 * 1024) { // Less than 1 GB
-    return 5 * 1024 * 1024; // 5 MB
-  } else { // 1 GB or larger
-    return 10 * 1024 * 1024; // 10 MB
-  }
-};*/
+const CHUNK_SIZE = 1024 * 1024; // 1 MB
 
 const FileUpload = () => {
   const [file, setFile] = useState(null);
@@ -20,21 +9,12 @@ const FileUpload = () => {
   const [uploadedFile, setUploadedFile] = useState(null);
   const [error, setError] = useState(null);
 
-  // Handle file selection to catch expeptions when new file is selected 
+  // Handle file selection
   const handleFileChange = (e) => {
     setFile(e.target.files[0]);
     setError(null); // Reset error when a new file is selected
   };
 
-
-  const saveUploadedChunks = (fileName, uploadedChunks) => {
-    localStorage.setItem(fileName, JSON.stringify(uploadedChunks));
-  };
-  
-  const getUploadedChunks = (fileName) => {
-    const uploadedChunks = localStorage.getItem(fileName);
-    return uploadedChunks ? JSON.parse(uploadedChunks) : [];
-  };
   // Upload a single chunk
   const uploadChunk = async (chunk, chunkIndex, totalChunks) => {
     const formData = new FormData();
@@ -57,31 +37,21 @@ const FileUpload = () => {
     }
   };
 
-
+  // Handle the full file upload process
   const handleUpload = async () => {
     if (!file) {
       setError("Please select a file.");
       return;
     }
-  
-    const totalChunks = Math.ceil(file.size / CHUNK_SIZE);
-    const uploadedChunks = getUploadedChunks(file.name);
-  
+
+    const totalChunks = Math.ceil(file.size / CHUNK_SIZE); // Calculate totalChunks
+
     try {
+      // Upload all chunks
       for (let i = 0; i < totalChunks; i++) {
-        if (uploadedChunks.includes(i)) {
-          // Skip already uploaded chunks
-          setProgress(((i + 1) / totalChunks) * 100);
-          continue;
-        }
-  
-        const chunk = file.slice(i * CHUNK_SIZE, (i + 1) * CHUNK_SIZE);
-        const response = await uploadChunk(chunk, i, totalChunks);
-  
-        // Mark this chunk as uploaded
-        uploadedChunks.push(i);
-        saveUploadedChunks(file.name, uploadedChunks);
-  
+        const chunk = file.slice(i * CHUNK_SIZE, (i + 1) * CHUNK_SIZE); // Split the file into chunks
+        const response = await uploadChunk(chunk, i, totalChunks); // Upload each chunk
+
         // If this is the last chunk, set the uploaded file
         if (i === totalChunks - 1 && response.success) {
           setUploadedFile(file.name);
@@ -92,7 +62,6 @@ const FileUpload = () => {
       console.error("Error completing upload:", error);
     }
   };
- 
 
   return (
     <div>
