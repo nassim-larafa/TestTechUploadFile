@@ -41,7 +41,6 @@ Avant de commencer, assurez-vous d'avoir les éléments suivants installés sur 
 
 3. **Installer les dépendances :**
    ```bash
-   cd ..
    pip install -r requirements.txt
    ```
 
@@ -63,7 +62,7 @@ Avant de commencer, assurez-vous d'avoir les éléments suivants installés sur 
 
 1. **Accéder au dossier du frontend :**
    ```bash
-   cd TestTechnique/Frontend
+   cd TestTechUploadFile/Frontend
    ```
 
 2. **Installer les dépendances :**
