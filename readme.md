@@ -21,7 +21,7 @@ Avant de commencer, assurez-vous d'avoir les éléments suivants installés sur 
 1. **Cloner le dépôt** :
    ```bash
    git clone https://github.com/nassim-larafa/TestTechUploadFile.git
-   cd TestTechnique/backend
+   cd TestTechUploadFile/backend
    ```
 
 2. **Créer un environnement virtuel :**
