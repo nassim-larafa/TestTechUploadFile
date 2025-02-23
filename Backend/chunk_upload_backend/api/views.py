@@ -36,8 +36,15 @@ class UploadChunkView(APIView):
         temp_dir = os.path.join(settings.MEDIA_ROOT, 'temp', file_name)
         os.makedirs(temp_dir, exist_ok=True)
 
-        # Save the chunk
+        # Check if the chunk already exists
         chunk_path = os.path.join(temp_dir, f'{file_name}.part{chunk_index}')
+        if os.path.exists(chunk_path):
+            return Response(
+                {'success': True, 'message': 'Chunk already uploaded', 'lastUploadedChunk': chunk_index},
+                status=status.HTTP_200_OK
+            )
+
+        # Save the chunk
         with open(chunk_path, 'wb') as f:
             for chunk_data in chunk.chunks():
                 f.write(chunk_data)
@@ -69,6 +76,6 @@ class UploadChunkView(APIView):
 
         # Return a success response for individual chunks
         return Response(
-            {'success': True, 'message': 'Chunk uploaded successfully'},
+            {'success': True, 'message': 'Chunk uploaded successfully', 'lastUploadedChunk': chunk_index},
             status=status.HTTP_200_OK
         )

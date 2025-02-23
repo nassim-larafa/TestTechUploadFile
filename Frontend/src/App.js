@@ -1,18 +1,20 @@
 import React, { useState } from "react";
 import axios from "axios";
 
-const CHUNK_SIZE = 1024 * 1024; // 1 MB
+const CHUNK_SIZE = 1024 * 1024 * 10; // 1 MB
 
 const FileUpload = () => {
   const [file, setFile] = useState(null);
   const [progress, setProgress] = useState(0);
   const [uploadedFile, setUploadedFile] = useState(null);
   const [error, setError] = useState(null);
+  const [lastUploadedChunk, setLastUploadedChunk] = useState(-1);
 
   // Handle file selection
   const handleFileChange = (e) => {
     setFile(e.target.files[0]);
     setError(null); // Reset error when a new file is selected
+    setLastUploadedChunk(-1); // Reset last uploaded chunk when a new file is selected
   };
 
   // Upload a single chunk
@@ -30,6 +32,7 @@ const FileUpload = () => {
         },
       });
       setProgress(((chunkIndex + 1) / totalChunks) * 100); // Update progress
+      setLastUploadedChunk(chunkIndex); // Update the last uploaded chunk
       return response.data; // Return the server response
     } catch (error) {
       console.error("Error uploading chunk:", error);
@@ -47,8 +50,8 @@ const FileUpload = () => {
     const totalChunks = Math.ceil(file.size / CHUNK_SIZE); // Calculate totalChunks
 
     try {
-      // Upload all chunks
-      for (let i = 0; i < totalChunks; i++) {
+      // Start uploading from the last uploaded chunk
+      for (let i = lastUploadedChunk + 1; i < totalChunks; i++) {
         const chunk = file.slice(i * CHUNK_SIZE, (i + 1) * CHUNK_SIZE); // Split the file into chunks
         const response = await uploadChunk(chunk, i, totalChunks); // Upload each chunk
 
