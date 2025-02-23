@@ -20,7 +20,7 @@ const FileUpload = () => {
   const [uploadedFile, setUploadedFile] = useState(null);
   const [error, setError] = useState(null);
 
-  // Handle file selection
+  // Handle file selection to catch expeptions when new file is selected 
   const handleFileChange = (e) => {
     setFile(e.target.files[0]);
     setError(null); // Reset error when a new file is selected

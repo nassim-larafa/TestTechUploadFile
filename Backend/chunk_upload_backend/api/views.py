@@ -17,9 +17,6 @@ class UploadChunkView(APIView):
                 status=status.HTTP_200_OK
             )
 
-        # Save the chunk (same logic as before)
-        ...
-
         # Mark this chunk as uploaded
         UploadedChunk.objects.create(file_name=file_name, chunk_index=chunk_index)
 

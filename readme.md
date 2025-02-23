@@ -77,6 +77,10 @@ Avant de commencer, assurez-vous d'avoir les éléments suivants installés sur 
    ```
 
 ---
+### En cas d'interruption 
+En cas d'interruption, pas de panique ! L'upload reprendra automatiquement à partir de la dernière progression interrompue.
 
+
+---
 **Auteur :** Larafa Nassim
 
