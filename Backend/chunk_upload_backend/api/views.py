@@ -1,4 +1,5 @@
 import os
+import shutil  # Import shutil for directory deletion
 from django.conf import settings
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -58,8 +59,10 @@ class UploadChunkView(APIView):
                     part_path = os.path.join(temp_dir, f'{file_name}.part{i}')
                     with open(part_path, 'rb') as part_file:
                         final_file.write(part_file.read())
-                    os.remove(part_path)
-            os.rmdir(temp_dir)
+                    os.remove(part_path)  # Delete the chunk after assembly
+
+            # Delete the temporary directory
+            shutil.rmtree(temp_dir)
 
             # Save file metadata to the database
             UploadedFile.objects.create(

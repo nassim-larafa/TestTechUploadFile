@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 
-const CHUNK_SIZE = 1024 * 1024 * 10; // 1 MB
+const CHUNK_SIZE = 1024 * 1024; // 1 MB
 
 const FileUpload = () => {
   const [file, setFile] = useState(null);
@@ -67,34 +67,40 @@ const FileUpload = () => {
   };
 
   return (
-    <div>
-      <h1>File Upload</h1>
-      <input type="file" onChange={handleFileChange} />
-      <button onClick={handleUpload}>Upload</button>
+    <div style={styles.container}>
+      <h1 style={styles.title}>File Upload</h1>
+      <input type="file" onChange={handleFileChange} style={styles.fileInput} />
+      <button onClick={handleUpload} style={styles.uploadButton}>
+        Upload
+      </button>
 
       {/* Progress Bar */}
       {progress > 0 && (
-        <div>
-          <progress value={progress} max="100" />
-          <span>{Math.round(progress)}%</span>
+        <div style={styles.progressContainer}>
+          <progress value={progress} max="100" style={styles.progressBar} />
+          <span style={styles.progressText}>{Math.round(progress)}%</span>
         </div>
       )}
 
       {/* Error Message */}
-      {error && <p style={{ color: "red" }}>{error}</p>}
+      {error && <p style={styles.errorText}>{error}</p>}
 
       {/* Uploaded File Preview */}
       {uploadedFile && (
-        <div>
-          <p>Uploaded File: {uploadedFile}</p>
+        <div style={styles.uploadedFileContainer}>
+          <p style={styles.uploadedFileText}>Uploaded File: {uploadedFile}</p>
           {uploadedFile.endsWith(".jpg") || uploadedFile.endsWith(".png") ? (
             <img
               src={`http://localhost:8000/media/${uploadedFile}`}
               alt="Uploaded"
-              style={{ maxWidth: "100%" }}
+              style={styles.uploadedImage}
             />
           ) : (
-            <a href={`http://localhost:8000/media/${uploadedFile}`} download>
+            <a
+              href={`http://localhost:8000/media/${uploadedFile}`}
+              download
+              style={styles.downloadLink}
+            >
               Download File
             </a>
           )}
@@ -102,6 +108,69 @@ const FileUpload = () => {
       )}
     </div>
   );
+};
+
+// Styles for the component
+const styles = {
+  container: {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
+    height: "100vh",
+    fontFamily: "Arial, sans-serif",
+    backgroundColor: "#f5f5f5",
+    padding: "20px",
+  },
+  title: {
+    fontSize: "2rem",
+    marginBottom: "20px",
+  },
+  fileInput: {
+    marginBottom: "20px",
+  },
+  uploadButton: {
+    padding: "10px 20px",
+    fontSize: "1rem",
+    backgroundColor: "#007bff",
+    color: "#fff",
+    border: "none",
+    borderRadius: "5px",
+    cursor: "pointer",
+  },
+  progressContainer: {
+    width: "300px",
+    marginTop: "20px",
+  },
+  progressBar: {
+    width: "100%",
+  },
+  progressText: {
+    display: "block",
+    textAlign: "center",
+    marginTop: "10px",
+  },
+  errorText: {
+    color: "red",
+    marginTop: "20px",
+  },
+  uploadedFileContainer: {
+    marginTop: "20px",
+    textAlign: "center",
+  },
+  uploadedFileText: {
+    fontSize: "1.2rem",
+  },
+  uploadedImage: {
+    maxWidth: "10%",
+    marginTop: "10px",
+  },
+  downloadLink: {
+    display: "inline-block",
+    marginTop: "10px",
+    color: "#007bff",
+    textDecoration: "none",
+  },
 };
 
 export default FileUpload;
